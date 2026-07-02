@@ -4,7 +4,8 @@ services:
   migrations:
     image: mediacms/mediacms:latest
     volumes:
-      - ./:/home/mediacms.io/mediacms/
+      - media_files:/home/mediacms/mediacms/media_files/
+      - logs:/home/mediacms/mediacms/logs/
     environment:
       ENABLE_UWSGI: 'no'
       ENABLE_NGINX: 'no'
@@ -12,8 +13,8 @@ services:
       ENABLE_CELERY_LONG: 'no'
       ENABLE_CELERY_BEAT: 'no'
       ADMIN_USER: 'admin'
-      'ADMIN_EMAIL: ${ADMIN_EMAIL}'
-      'ADMIN_PASSWORD: ${ADMIN_PASSWORD}'
+      ADMIN_EMAIL: 'admin@example.com'  # Замените на ваш email
+      ADMIN_PASSWORD: 'admin123'        # Замените на ваш пароль
     command: "./deploy/docker/prestart.sh"
     restart: on-failure
     depends_on:
@@ -21,14 +22,15 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
+
   web:
     image: mediacms/mediacms:latest
     deploy:
       replicas: 1
-    ports:
-      - "80:80"
+    # ⚠️ Секция ports УДАЛЕНА — Coolify управляет портами сам
     volumes:
-      - ./:/home/mediacms.io/mediacms/
+      - media_files:/home/mediacms/mediacms/media_files/
+      - logs:/home/mediacms/mediacms/logs/
     environment:
       ENABLE_CELERY_BEAT: 'no'
       ENABLE_CELERY_SHORT: 'no'
@@ -36,10 +38,12 @@ services:
       ENABLE_MIGRATIONS: 'no'
     depends_on:
       - migrations
+
   celery_beat:
     image: mediacms/mediacms:latest
     volumes:
-      - ./:/home/mediacms.io/mediacms/
+      - media_files:/home/mediacms/mediacms/media_files/
+      - logs:/home/mediacms/mediacms/logs/
     environment:
       ENABLE_UWSGI: 'no'
       ENABLE_NGINX: 'no'
@@ -48,12 +52,14 @@ services:
       ENABLE_MIGRATIONS: 'no'
     depends_on:
       - redis
+
   celery_worker:
     image: mediacms/mediacms:latest
     deploy:
       replicas: 1
     volumes:
-      - ./:/home/mediacms.io/mediacms/
+      - media_files:/home/mediacms/mediacms/media_files/
+      - logs:/home/mediacms/mediacms/logs/
     environment:
       ENABLE_UWSGI: 'no'
       ENABLE_NGINX: 'no'
@@ -61,10 +67,11 @@ services:
       ENABLE_MIGRATIONS: 'no'
     depends_on:
       - migrations
+
   db:
     image: postgres:17.2-alpine
     volumes:
-      - ../postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/  # Исправленный путь!
     restart: always
     environment:
       POSTGRES_USER: mediacms
@@ -76,6 +83,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
   redis:
     image: "redis:alpine"
     restart: always
@@ -84,3 +92,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+
+volumes:
+  media_files:
+  logs:
+  postgres_data:  # Добавлен том для БД
