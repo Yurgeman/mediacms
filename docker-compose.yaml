@@ -1,21 +1,21 @@
-version: "3"
+version: '3'
 
 services:
   migrations:
-    image: mediacms/mediacms:latest
+    image: 'mediacms/mediacms:latest'
     volumes:
-      - media_files:/home/mediacms/mediacms/media_files/
-      - logs:/home/mediacms/mediacms/logs/
+      - '/media/2tb/mediacms/media_files:/home/mediacms/mediacms/media_files/'
+      - 'logs:/home/mediacms/mediacms/logs/'
     environment:
       ENABLE_UWSGI: 'no'
       ENABLE_NGINX: 'no'
       ENABLE_CELERY_SHORT: 'no'
       ENABLE_CELERY_LONG: 'no'
       ENABLE_CELERY_BEAT: 'no'
-      ADMIN_USER: 'admin'
-      ADMIN_EMAIL: 'admin@example.com'  # Замените на ваш email
-      ADMIN_PASSWORD: 'admin123'        # Замените на ваш пароль
-    command: "./deploy/docker/prestart.sh"
+      ADMIN_USER: yurgeman
+      ADMIN_EMAIL: yura@site.net
+      ADMIN_PASSWORD: yurgeman123
+    command: ./deploy/docker/prestart.sh
     restart: on-failure
     depends_on:
       redis:
@@ -24,13 +24,12 @@ services:
         condition: service_healthy
 
   web:
-    image: mediacms/mediacms:latest
+    image: 'mediacms/mediacms:latest'
     deploy:
       replicas: 1
-    # ⚠️ Секция ports УДАЛЕНА — Coolify управляет портами сам
     volumes:
-      - media_files:/home/mediacms/mediacms/media_files/
-      - logs:/home/mediacms/mediacms/logs/
+      - '/media/2tb/mediacms/media_files:/home/mediacms/mediacms/media_files/'
+      - 'logs:/home/mediacms/mediacms/logs/'
     environment:
       ENABLE_CELERY_BEAT: 'no'
       ENABLE_CELERY_SHORT: 'no'
@@ -40,10 +39,10 @@ services:
       - migrations
 
   celery_beat:
-    image: mediacms/mediacms:latest
+    image: 'mediacms/mediacms:latest'
     volumes:
-      - media_files:/home/mediacms/mediacms/media_files/
-      - logs:/home/mediacms/mediacms/logs/
+      - '/media/2tb/mediacms/media_files:/home/mediacms/mediacms/media_files/'
+      - 'logs:/home/mediacms/mediacms/logs/'
     environment:
       ENABLE_UWSGI: 'no'
       ENABLE_NGINX: 'no'
@@ -54,12 +53,12 @@ services:
       - redis
 
   celery_worker:
-    image: mediacms/mediacms:latest
+    image: 'mediacms/mediacms:latest'
     deploy:
       replicas: 1
     volumes:
-      - media_files:/home/mediacms/mediacms/media_files/
-      - logs:/home/mediacms/mediacms/logs/
+      - '/media/2tb/mediacms/media_files:/home/mediacms/mediacms/media_files/'
+      - 'logs:/home/mediacms/mediacms/logs/'
     environment:
       ENABLE_UWSGI: 'no'
       ENABLE_NGINX: 'no'
@@ -69,9 +68,9 @@ services:
       - migrations
 
   db:
-    image: postgres:17.2-alpine
+    image: 'postgres:17.2-alpine'
     volumes:
-      - postgres_data:/var/lib/postgresql/data/  # Исправленный путь!
+      - 'postgres_data:/var/lib/postgresql/data/'
     restart: always
     environment:
       POSTGRES_USER: mediacms
@@ -79,21 +78,31 @@ services:
       POSTGRES_DB: mediacms
       TZ: Europe/London
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      test:
+        - CMD-SHELL
+        - 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}'
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
-    image: "redis:alpine"
+    image: 'redis:alpine'
     restart: always
     healthcheck:
-      test: ["CMD", "redis-cli","ping"]
+      test:
+        - CMD
+        - redis-cli
+        - ping
       interval: 10s
       timeout: 5s
       retries: 3
 
 volumes:
   media_files:
-  logs:
-  postgres_data:  # Добавлен том для БД
+    driver: local
+    driver_opts:
+      type: none
+      device: /media/2tb/mediacms/media_files
+      o: bind
+  logs: null
+  postgres_data: null
