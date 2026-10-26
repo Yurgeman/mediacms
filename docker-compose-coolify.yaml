@@ -2,9 +2,9 @@ services:
   migrations:
     image: 'mediacms/mediacms:latest'
     volumes:
-      - '/media/2tb/mediacms/media_files:/home/mediacms.io/mediacms/media_files/'
-      - '/media/2tb/mediacms/logs:/home/mediacms.io/mediacms/logs/'
-      - '/media/2tb/mediacms/secret_key:/home/mediacms.io/mediacms/.secret_key'
+      - '/hdd/2tb/mediacms/media_files:/home/mediacms.io/mediacms/media_files/'
+      - '/hdd/2tb/mediacms/logs:/home/mediacms.io/mediacms/logs/'
+      - '/hdd/2tb/mediacms/secret_key:/home/mediacms.io/mediacms/.secret_key'
     environment:
       ENABLE_UWSGI: ${ENABLE_UWSGI:-no}
       ENABLE_NGINX: ${ENABLE_NGINX:-no}
@@ -29,9 +29,9 @@ services:
   web:
     image: 'mediacms/mediacms:latest'
     volumes:
-      - '/media/2tb/mediacms/media_files:/home/mediacms.io/mediacms/media_files/'
-      - '/media/2tb/mediacms/logs:/home/mediacms.io/mediacms/logs/'
-      - '/media/2tb/mediacms/secret_key:/home/mediacms.io/mediacms/.secret_key'
+      - '/hdd/2tb/mediacms/media_files:/home/mediacms.io/mediacms/media_files/'
+      - '/hdd/2tb/mediacms/logs:/home/mediacms.io/mediacms/logs/'
+      - '/hdd/2tb/mediacms/secret_key:/home/mediacms.io/mediacms/.secret_key'
     environment:
       ENABLE_UWSGI: ${ENABLE_UWSGI:-yes}
       ENABLE_NGINX: ${ENABLE_NGINX:-no}
@@ -57,9 +57,9 @@ services:
   celery_beat:
     image: 'mediacms/mediacms:latest'
     volumes:
-      - '/media/2tb/mediacms/media_files:/home/mediacms.io/mediacms/media_files/'
-      - '/media/2tb/mediacms/logs:/home/mediacms.io/mediacms/logs/'
-      - '/media/2tb/mediacms/secret_key:/home/mediacms.io/mediacms/.secret_key'
+      - '/hdd/2tb/mediacms/media_files:/home/mediacms.io/mediacms/media_files/'
+      - '/hdd/2tb/mediacms/logs:/home/mediacms.io/mediacms/logs/'
+      - '/hdd/2tb/mediacms/secret_key:/home/mediacms.io/mediacms/.secret_key'
     environment:
       ENABLE_UWSGI: ${ENABLE_UWSGI:-no}
       ENABLE_NGINX: ${ENABLE_NGINX:-no}
@@ -81,9 +81,9 @@ services:
   celery_worker:
     image: 'mediacms/mediacms:latest'
     volumes:
-      - '/media/2tb/mediacms/media_files:/home/mediacms.io/mediacms/media_files/'
-      - '/media/2tb/mediacms/logs:/home/mediacms.io/mediacms/logs/'
-      - '/media/2tb/mediacms/secret_key:/home/mediacms.io/mediacms/.secret_key'
+      - '/hdd/2tb/mediacms/media_files:/home/mediacms.io/mediacms/media_files/'
+      - '/hdd/2tb/mediacms/logs:/home/mediacms.io/mediacms/logs/'
+      - '/hdd/2tb/mediacms/secret_key:/home/mediacms.io/mediacms/.secret_key'
     environment:
       ENABLE_UWSGI: ${ENABLE_UWSGI:-no}
       ENABLE_NGINX: ${ENABLE_NGINX:-no}
