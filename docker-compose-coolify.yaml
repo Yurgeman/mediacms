@@ -35,6 +35,8 @@ services:
       ENABLE_MIGRATIONS: ${ENABLE_MIGRATIONS:-no}
     depends_on:
       - migrations
+     ports:
+      - "8088:80"
 
   celery_beat:
     image: 'mediacms/mediacms:latest'
